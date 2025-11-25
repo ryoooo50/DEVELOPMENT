@@ -2,6 +2,8 @@
 
 このドキュメントでは、ミニゲームプラットフォームをRenderにデプロイする方法を説明します。
 
+**無料版でのデプロイ**: Renderの無料版でもデプロイ可能です。詳細は [RENDER_FREE_TIER.md](RENDER_FREE_TIER.md) を参照してください。
+
 ## Renderへのデプロイ
 
 ### 前提条件
@@ -40,13 +42,16 @@ git push -u origin main
 3. 以下の設定を入力：
    - **Name**: `minigame-platform`
    - **Environment**: `Java`
-   - **Build Command**: `./gradlew build -x test`
-   - **Start Command**: `java -Dserver.port=$PORT -jar build/libs/minigame-platform-1.0.0.jar`
+   - **Build Command**: `chmod +x ./gradlew && ./gradlew clean build -x test`
+   - **Start Command（推奨）**: `./gradlew bootRun --args='--server.port=$PORT'`
+   - **Start Command（代替）**: `/usr/bin/java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar`
    - **Plan**: Free（またはお好みのプラン）
 
 **重要**: 
-- ビルドコマンドに`-x test`を追加してテストをスキップ（テストが未実装の場合）
-- スタートコマンドで`$PORT`環境変数を使用（Renderが自動設定）
+- ビルドコマンドに`chmod +x`と`clean`を追加
+- スタートコマンドは`./gradlew bootRun`を使用することを推奨（Javaパスの問題を回避）
+- または、`/usr/bin/java`のフルパスを使用
+- `$PORT`環境変数を使用（Renderが自動設定）
 
 #### 4. 環境変数の設定
 

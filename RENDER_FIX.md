@@ -14,7 +14,11 @@
 
 **正しい設定**:
 - **Build Command**: `chmod +x ./gradlew && ./gradlew clean build -x test`
-- **Start Command**: `java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar`
+- **Start Command（方法1 - JAR使用）**: `/usr/bin/java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar`
+- **Start Command（方法2 - Gradle使用、推奨）**: `./gradlew bootRun --args='--server.port=$PORT'`
+
+**Javaコマンドが見つからない場合**:
+- Renderでは`/usr/bin/java`のフルパスを使用するか、Gradleの`bootRun`タスクを使用することを推奨
 
 #### 3. ポート番号のエラー
 
@@ -94,6 +98,18 @@ SPRING_DATASOURCE_PASSWORD=<データベースのパスワード>
 - 依存関係のダウンロードエラー
 
 ### アプリケーションが起動しない
+
+**エラー**: `java: command not found`
+
+**解決方法**:
+1. **Start Command**を以下に変更：
+   ```
+   /usr/bin/java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar
+   ```
+2. または、GradleのbootRunを使用：
+   ```
+   ./gradlew bootRun --args='--server.port=$PORT'
+   ```
 
 **確認事項**:
 - ポート番号が`$PORT`を使用しているか

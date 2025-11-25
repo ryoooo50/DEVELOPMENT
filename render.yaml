@@ -3,8 +3,10 @@ services:
     name: minigame-platform
     env: java
     plan: free
+    region: oregon
     buildCommand: chmod +x ./gradlew && ./gradlew clean build -x test
-    startCommand: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar
+    startCommand: /usr/bin/java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar
+    healthCheckPath: /
     envVars:
       - key: JAVA_VERSION
         value: 17
@@ -28,4 +30,5 @@ databases:
     databaseName: minigame
     user: minigame_user
     plan: free
+    region: oregon
 
