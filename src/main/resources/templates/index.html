@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ミニゲームプラットフォーム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🎮 ミニゲームプラットフォーム</h1>
+            <p class="subtitle">楽しいミニゲームで遊んで、ハイスコアを目指そう！</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="/ranking" class="btn btn-primary" style="font-size: 1.2em; padding: 15px 30px;">
+                🏆 全体ランキングを見る
+            </a>
+        </div>
+        
+        <section class="games-grid">
+            <div th:each="game : ${games}" class="game-card">
+                <div class="game-icon" th:switch="${game.type}">
+                    <span th:case="'number-guess'">🔢</span>
+                    <span th:case="'typing'">⌨️</span>
+                    <span th:case="'quiz'">❓</span>
+                    <span th:case="'memory'">🧠</span>
+                    <span th:case="'reaction'">⚡</span>
+                    <span th:case="'snake'">🐍</span>
+                    <span th:case="'math'">🔢</span>
+                    <span th:case="'breakout'">🎯</span>
+                    <span th:case="*">🎮</span>
+                </div>
+                <h2 th:text="${game.name}"></h2>
+                <p th:text="${game.description}"></p>
+                <div class="game-actions">
+                    <a th:href="@{/game/{id}(id=${game.id})}" class="btn btn-primary">プレイ</a>
+                    <a th:href="@{/leaderboard/{id}(id=${game.id})}" class="btn btn-secondary">ランキング</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 ミニゲームプラットフォーム</p>
+        </div>
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${game.name} + ' - ランキング'"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/" class="home-link">🎮 ミニゲームプラットフォーム</a></h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="leaderboard-container">
+            <h2 th:text="${game.name} + ' - ランキング'"></h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <a th:href="@{/game/{id}(id=${game.id})}" class="btn btn-primary" style="margin-right: 10px;">ゲームに戻る</a>
+                <a href="/ranking" class="btn btn-secondary">全体ランキング</a>
+            </div>
+            
+            <div id="leaderboard-content">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>順位</th>
+                            <th>プレイヤー名</th>
+                            <th>スコア</th>
+                            <th>プレイ日時</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <tr>
+                            <td colspan="4" class="loading">読み込み中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const gameId = [[${game.id}]];
+        fetch(`/api/scores/game/${gameId}`)
+            .then(response => response.json())
+            .then(scores => {
+                const tbody = document.getElementById('leaderboard-body');
+                if (scores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="no-data">まだスコアがありません</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = scores.map((score, index) => {
+                    const date = new Date(score.playedAt);
+                    return `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${score.playerName}</td>
+                            <td>${score.score}</td>
+                            <td>${date.toLocaleString('ja-JP')}</td>
+                        </tr>
+                    `;
+                }).join('');
+            })
+            .catch(error => {
+                console.error('Error loading leaderboard:', error);
+                document.getElementById('leaderboard-body').innerHTML = 
+                    '<tr><td colspan="4" class="error">エラーが発生しました</td></tr>';
+            });
+    </script>
+</body>
+</html>
+

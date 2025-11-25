@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全体ランキング - ミニゲームプラットフォーム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="/" class="home-link">🎮 ミニゲームプラットフォーム</a></h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="leaderboard-container">
+            <h2>🏆 全体ランキング</h2>
+            
+            <div class="ranking-tabs" style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center;">
+                <button class="btn btn-primary" onclick="showRanking('best-score')" id="tab-best-score">最高スコア</button>
+                <button class="btn btn-secondary" onclick="showRanking('total-score')" id="tab-total-score">合計スコア</button>
+                <button class="btn btn-secondary" onclick="showRanking('games-played')" id="tab-games-played">プレイ回数</button>
+            </div>
+            
+            <div id="ranking-content">
+                <div class="loading">読み込み中...</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showRanking(type) {
+            // Update tab buttons
+            document.querySelectorAll('.ranking-tabs button').forEach(btn => {
+                btn.className = 'btn btn-secondary';
+            });
+            document.getElementById(`tab-${type}`).className = 'btn btn-primary';
+            
+            // Show loading
+            document.getElementById('ranking-content').innerHTML = '<div class="loading">読み込み中...</div>';
+            
+            // Fetch ranking data
+            const endpoint = `/api/players/ranking/${type}`;
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(players => {
+                    const content = document.getElementById('ranking-content');
+                    if (players.length === 0) {
+                        content.innerHTML = '<div class="no-data">まだランキングデータがありません</div>';
+                        return;
+                    }
+                    
+                    let title = '';
+                    let valueKey = '';
+                    switch(type) {
+                        case 'best-score':
+                            title = '最高スコア';
+                            valueKey = 'bestScore';
+                            break;
+                        case 'total-score':
+                            title = '合計スコア';
+                            valueKey = 'totalScore';
+                            break;
+                        case 'games-played':
+                            title = 'プレイ回数';
+                            valueKey = 'totalGamesPlayed';
+                            break;
+                    }
+                    
+                    content.innerHTML = `
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">${title}ランキング</h3>
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>順位</th>
+                                    <th>プレイヤー名</th>
+                                    <th>${title}</th>
+                                    <th>総プレイ回数</th>
+                                    <th>合計スコア</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${players.map((player, index) => `
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td><strong>${player.name || '不明'}</strong></td>
+                                        <td>${player[valueKey] || 0}</td>
+                                        <td>${player.totalGamesPlayed || 0}</td>
+                                        <td>${player.totalScore || 0}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error loading ranking:', error);
+                    document.getElementById('ranking-content').innerHTML = 
+                        '<div class="error">エラーが発生しました</div>';
+                });
+        }
+        
+        // Load default ranking on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            showRanking('best-score');
+        });
+    </script>
+</body>
+</html>
+
