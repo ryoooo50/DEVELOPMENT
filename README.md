@@ -103,12 +103,20 @@ src/
 
 ## データベース
 
+### 開発環境
 H2データベース（インメモリ）を使用しています。開発用にH2コンソールが有効になっています。
 
 - H2コンソール: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:mem:minigame`
 - ユーザー名: `sa`
 - パスワード: (空)
+
+### 本番環境
+PostgreSQLデータベースを使用します。環境変数で設定してください。
+
+## デプロイ
+
+Renderへのデプロイ方法については、[DEPLOYMENT.md](DEPLOYMENT.md)を参照してください。
 
 ## ライセンス
 

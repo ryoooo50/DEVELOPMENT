@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: minigame-platform
+    env: java
+    plan: free
+    buildCommand: chmod +x ./gradlew && ./gradlew clean build -x test
+    startCommand: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/minigame-platform-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: minigame-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: minigame-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: minigame-db
+          property: password
+
+databases:
+  - name: minigame-db
+    databaseName: minigame
+    user: minigame_user
+    plan: free
+

@@ -36,3 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 
+### Application specific ###
+*.log
+*.tmp
+.DS_Store
+*.swp
+*.swo
+*~
